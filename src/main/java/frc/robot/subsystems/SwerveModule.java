@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.drivers.PearadoxSparkMax;
+import frc.lib.drivers.WarriorSparkMax;
 import frc.robot.Constants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -24,8 +24,8 @@ public class SwerveModule extends SubsystemBase {
 private int turnMotorId;
 private int driveMotorId;
 
-  private PearadoxSparkMax driveMotor;
-  private PearadoxSparkMax turnMotor;
+  private WarriorSparkMax driveMotor;
+  private WarriorSparkMax turnMotor;
 
   private RelativeEncoder driveEncoder;
   private RelativeEncoder turnEncoder;
@@ -58,8 +58,8 @@ private int driveMotorId;
       .inverted(turnMotorReversed)
       .idleMode(IdleMode.kCoast);
 
-      driveMotor = new PearadoxSparkMax(driveMotorId,MotorType.kBrushless,driveConfig);
-      turnMotor = new PearadoxSparkMax(turnMotorId,MotorType.kBrushless,turnConfig);
+      driveMotor = new WarriorSparkMax(driveMotorId,MotorType.kBrushless,driveMotorReversed, IdleMode.kCoast, Constants.SwerveConstants.DRIVE_CURRENT_LIMIT);
+      turnMotor = new WarriorSparkMax(turnMotorId,MotorType.kBrushless,turnMotorReversed, IdleMode.kCoast, Constants.SwerveConstants.ROTATION_CURRENT_LIMIT);
       // driveMotor = new PearadoxSparkMax(driveMotorId, MotorType.kBrushless, IdleMode.kCoast, 45, driveMotorReversed);
       // turnMotor = new PearadoxSparkMax(turnMotorId, MotorType.kBrushless, IdleMode.kCoast, 25, turnMotorReversed);
 

@@ -59,7 +59,7 @@ public class SpeakerAllignment extends SubsystemBase {
 
     public void configureAliance(boolean isBlue){
         int targetTagID = isBlue ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
-        limelightNetworkTable.getEntry("pipline").setNumber(targetTagID);
+        limelightNetworkTable.getEntry("pipeline").setNumber(targetTagID);
     }
 
     private double calculateDistance(double verticalAngle){

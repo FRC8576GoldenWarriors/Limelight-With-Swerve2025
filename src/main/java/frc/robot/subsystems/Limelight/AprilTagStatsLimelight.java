@@ -18,7 +18,7 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     public static NetworkTable table = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.limelightNetworkTableKey.LIMELIGHT_NETWORKTABLE_KEY);
     //constructor
     public void Stats() {
-        
+
 
         NetworkTableEntry tx = table.getEntry("tx");
         NetworkTableEntry ty = table.getEntry("ty");
@@ -34,11 +34,11 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         
 
         if (hasValidTargets()) {
-            System.out.println("Target found");
+            SmartDashboard.putBoolean("Has Targets", true);
             pose = getBotPose();
             updateRobotPoseInSmartDashboard();
         } else {
-            System.out.println("No target found");
+            SmartDashboard.putBoolean("Has Targets", false);
         }
         
 
