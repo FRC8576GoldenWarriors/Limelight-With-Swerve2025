@@ -21,8 +21,8 @@ import frc.robot.Constants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class SwerveModule extends SubsystemBase {
-private int turnMotorId;
-private int driveMotorId;
+  private int turnMotorId;
+  private int driveMotorId;
 
   private WarriorSparkMax driveMotor;
   private WarriorSparkMax turnMotor;

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.commands.AdjustRobotPos;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController; // if using Xbox controller
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;    // for other controllers
-import frc.robot.commands.AlignToSpeaker;
+import frc.robot.commands.AlignToAprilTag;
 // import frc.robot.commands.Climb;
 // import frc.robot.commands.ClimbDown;
 // import frc.robot.commands.FFShooterAngle;
@@ -46,14 +46,16 @@ import frc.robot.subsystems.Drivetrain;
 // import frc.robot.subsystems.RainbowLEDPattern;
 // import frc.robot.subsystems.Shooter;
 // import frc.robot.subsystems.ShooterRoller;
-import frc.robot.subsystems.Limelight.SpeakerAllignment;
+//import frc.robot.subsystems.Limelight.SpeakerAllignment;
+import frc.robot.subsystems.Limelight.AprilTagStatsLimelight;
 
 
 
 public class RobotContainer {
 
   public static final Drivetrain drivetrain = Drivetrain.getInstance();
-  public final SpeakerAllignment speakerAllignment = new SpeakerAllignment(drivetrain);
+  //public final SpeakerAllignment speakerAllignment = new SpeakerAllignment(drivetrain);
+  private AprilTagStatsLimelight aprilTagStatsLimelight = new AprilTagStatsLimelight();
 
 
   // public static final Intake m_Intake = new Intake();
@@ -73,7 +75,7 @@ public class RobotContainer {
 
   private final JoystickButton resetHeading_Start = new JoystickButton(driverController.getHID(), XboxController.Button.kStart.value);
 
-  private Command AlignToSpeaker = new AlignToSpeaker(speakerAllignment);
+  private Command AlignToAprilTag = new AlignToAprilTag(aprilTagStatsLimelight, drivetrain);
 
   public RobotContainer() {
 
@@ -91,7 +93,7 @@ public class RobotContainer {
 
 
     // This command will execute whenever the d-pad up button is pressed
-    driverController.povUp().and(() -> speakerAllignment.hasValidTargets()).onTrue(AlignToSpeaker);
+    driverController.povUp().and(() -> aprilTagStatsLimelight.hasValidTargets()).whileTrue(AlignToAprilTag);
 
     resetHeading_Start.onTrue(
       new InstantCommand(drivetrain::zeroHeading, drivetrain));

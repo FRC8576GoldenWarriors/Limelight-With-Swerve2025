@@ -58,7 +58,6 @@ public class Robot extends TimedRobot {
     // m_led.setData(m_ledBuffer);
 
     // m_led.start();
-    
     m_robotContainer = new RobotContainer();
    
   }
@@ -98,7 +97,7 @@ public class Robot extends TimedRobot {
     
 
     CommandScheduler.getInstance().run();
-    limelight.Stats();
+    limelight.updateStats();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
