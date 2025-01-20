@@ -53,7 +53,7 @@ public final class Constants {
     }
 
    public static class limelightNetworkTableKey{
-    public static final String LIMELIGHT_NETWORKTABLE_KEY = "limelight-miracle";
+    public static final String LIMELIGHT_NETWORKTABLE_KEY = "limelight";
    }
 
 

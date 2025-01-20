@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
   
 
   private WarriorSparkMax pivotMotor;
-
+  
 
   private DutyCycleEncoder shooterEncoder;
 
@@ -49,10 +49,10 @@ public class Shooter extends SubsystemBase {
 
 
     Timer.delay(0.2);
-    pivotMotor.burnFlash();
+    
 
     shooterEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterEncoderID);
-    shooterEncoder.setPositionOffset(Constants.ShooterConstants.shooterEncoderOffset);
+    //shooterEncoder.setPositionOffset(Constants.ShooterConstants.shooterEncoderOffset);
 
     // controller = new ProfiledPIDController(0.61, 0, 0, new Constraints(Units.degreesToRadians(180.0), Units.degreesToRadians(360.0)));
 
@@ -73,9 +73,9 @@ public class Shooter extends SubsystemBase {
   }
 
   
-  public void zeroEncoder(){
-    shooterEncoder.reset();
-  }
+  // public void zeroEncoder(){
+  //   shooterEncoder.reset();
+  // }
 
   public double getPivotMotorVoltage(){
     return pivotMotor.getBusVoltage();
@@ -122,13 +122,13 @@ public class Shooter extends SubsystemBase {
     return shooterEncoder;
   }
   public double getAbsoluteDistance(){
-    return Math.abs(shooterEncoder.getDistance());
+    return Math.abs(shooterEncoder.get());
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shooter Encoder Position", getShooterEncoder().getAbsolutePosition());
-    SmartDashboard.putNumber("Shooter encoder distance: ", Math.abs(getShooterEncoder().getDistance()));
+    SmartDashboard.putNumber("Shooter Encoder Position", getShooterEncoder().get());
+    SmartDashboard.putNumber("Shooter encoder distance: ", Math.abs(getShooterEncoder().get()));
     // This method will be called once per scheduler run
   }
 }
