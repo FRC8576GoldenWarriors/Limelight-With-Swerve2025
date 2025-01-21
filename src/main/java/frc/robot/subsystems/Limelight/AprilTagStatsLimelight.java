@@ -1,130 +1,158 @@
 package frc.robot.subsystems.Limelight;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Drivetrain;
 
 public class AprilTagStatsLimelight extends SubsystemBase {
 
-    private Drivetrain drivetrain = Drivetrain.getInstance();
-    public static NetworkTable table = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.limelightNetworkTableKey.LIMELIGHT_NETWORKTABLE_KEY);
-    //constructor
-    public void Stats() {
+    private final Drivetrain drivetrain;
+    private final NetworkTable table;
+    private AprilTagFieldLayout m_layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+    public AprilTagStatsLimelight() {
+        this.drivetrain = Drivetrain.getInstance();
+        this.table = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.limelightNetworkTableKey.LIMELIGHT_NETWORKTABLE_KEY);
+        configureAliance();
+    }
 
 
-        NetworkTableEntry tx = table.getEntry("tx");
-        NetworkTableEntry ty = table.getEntry("ty");
-        NetworkTableEntry ta = table.getEntry("ta");
-        NetworkTableEntry tid = table.getEntry("tid");
-        NetworkTableEntry botpose = table.getEntry("botpose");
-
-        double x = tx.getDouble(0.0);
-        double y = ty.getDouble(0.0);
-        double area = ta.getDouble(0.0);
-        double id = tid.getDouble(0.0);
-        Pose3d pose;
-        
+    public void updateStats() {
+        double x = getTX();
+        double y = getTY();
+        double area = getArea();
+        double id = getID();
 
         if (hasValidTargets()) {
             SmartDashboard.putBoolean("Has Targets", true);
-            pose = getBotPose();
             updateRobotPoseInSmartDashboard();
         } else {
             SmartDashboard.putBoolean("Has Targets", false);
         }
-        
 
         updateValues(x, y, area, id);
     }
 
-    public static double getTX(){
-        return table.getEntry("tx").getDouble(0.0);
+    public double getTX() {
+        return getEntryValue("tx");
     }
 
-    public static double getTY(){
-        return table.getEntry("ty").getDouble(0.0);
-    }
-    
-    public static boolean hasValidTargets(){
-        return table.getEntry("tv").getDouble(0) == 1;
-    } 
-
-    public static double getArea() {
-        return table.getEntry("ta").getDouble(0.0);
+    public double getTY() {
+        return getEntryValue("ty");
     }
 
-    public static double getID(){
-        return table.getEntry("tid").getDouble(0.0);
+    public boolean hasValidTargets() {
+        return getEntryValue("tv") == 1;
+    }
+
+    public double getArea() {
+        return getEntryValue("ta");
+    }
+
+    public int getID() {
+        if (hasValidTargets()) return (int) getEntryValue("tid");
+        return -1;
     }
 
     public Pose3d getBotPose() {
         double[] botpose = table.getEntry("botpose").getDoubleArray(new double[6]);
-
         if (botpose.length < 6) {
             return null;
-        } else {
-            double x = botpose[0];
-            double y = botpose[1];
-            double z = botpose[2];
-            double roll = Math.toRadians(botpose[3]);
-            double pitch = Math.toRadians(botpose[4]);
-            double yaw = Math.toRadians(botpose[5]);
-    
-            return new Pose3d(x, y, z, new Rotation3d(roll, pitch, yaw));
         }
-
+        return new Pose3d(
+            botpose[0],
+            botpose[1],
+            botpose[2],
+            new Rotation3d(
+                Math.toRadians(botpose[3]),
+                Math.toRadians(botpose[4]),
+                Math.toRadians(botpose[5])
+            )
+        );
     }
 
-    public void updateValues(double x, double y, double area, double id) {
+    private double getEntryValue(String entryName) {
+        return table.getEntry(entryName).getDouble(0.0);
+    }
+
+    private void updateValues(double x, double y, double area, double id) {
         SmartDashboard.putNumber("Limelight X", x);
         SmartDashboard.putNumber("Limelight Y", y);
         SmartDashboard.putNumber("Limelight Area", area);
         SmartDashboard.putNumber("Limelight ID", id);
-        // SmartDashboard.putNumberArray("Limelight Botpose", botpose);
-
     }
 
-    public void updateRobotPoseInSmartDashboard() {
+    public double getPitch() {
+        Pose3d pose = getBotPose();
+        return pose != null ? pose.getRotation().getY() : 0.0;
+    }
+
+    private void updateRobotPoseInSmartDashboard() {
         boolean hasTarget = hasValidTargets();
-        SmartDashboard.putBoolean("Limelight" + "/Has Target", hasTarget);
-        
+        SmartDashboard.putBoolean("Limelight/Has Target", hasTarget);
+
         if (hasTarget) {
             Pose3d pose = getBotPose();
             if (pose != null) {
-                // Position data
-                //System.out.println("pose in not null");
-                SmartDashboard.putNumber("Limelight" + "/Position/X", pose.getX());
-                SmartDashboard.putNumber("Limelight" + "/Position/Y", pose.getY());
-                SmartDashboard.putNumber("Limelight" + "/Position/Z", pose.getZ());
-                
-                // Rotation data (converted to degrees for easier reading)
-                SmartDashboard.putNumber("Limelight" + "/Rotation/Roll", Math.toDegrees(pose.getRotation().getX()));
-                SmartDashboard.putNumber("Limelight" + "/Rotation/Pitch", Math.toDegrees(pose.getRotation().getY()));
-                SmartDashboard.putNumber("Limelight" + "/Rotation/Yaw", Math.toDegrees(pose.getRotation().getZ()));
-                
-                // Distance from target (calculated from X and Y)
-                double distance = Math.sqrt(pose.getX() * pose.getX() + pose.getY() * pose.getY());
-                SmartDashboard.putNumber("Limelight" + "/Distance", distance);
+                updatePoseDashboard(pose);
             }
         } else {
-            // Clear the values when no target is detected
-            SmartDashboard.putNumber("Limelight" + "/Position/X", 0);
-            SmartDashboard.putNumber("Limelight" + "/Position/Y", 0);
-            SmartDashboard.putNumber("Limelight" + "/Position/Z", 0);
-            SmartDashboard.putNumber("Limelight" + "/Rotation/Roll", 0);
-            SmartDashboard.putNumber("Limelight" + "/Rotation/Pitch", 0);
-            SmartDashboard.putNumber("Limelight" + "/Rotation/Yaw", 0);
-            SmartDashboard.putNumber("Limelight" + "/Distance", 0);
-            System.out.println("Pose is empty");
+            clearPoseDashboard();
         }
     }
 
+    private void updatePoseDashboard(Pose3d pose) {
+        SmartDashboard.putNumber("Limelight/Position/X", pose.getX());
+        SmartDashboard.putNumber("Limelight/Position/Y", pose.getY());
+        SmartDashboard.putNumber("Limelight/Position/Z", pose.getZ());
+        SmartDashboard.putNumber("Limelight/Rotation/Roll", Math.toDegrees(pose.getRotation().getX()));
+        SmartDashboard.putNumber("Limelight/Rotation/Pitch", Math.toDegrees(pose.getRotation().getY()));
+        SmartDashboard.putNumber("Limelight/Rotation/Yaw", Math.toDegrees(pose.getRotation().getZ()));
+        SmartDashboard.putNumber("Limelight/Distance", calculateDistance(getID()));
+    }
+
+    private void clearPoseDashboard() {
+        SmartDashboard.putNumber("Limelight/Position/X", 0);
+        SmartDashboard.putNumber("Limelight/Position/Y", 0);
+        SmartDashboard.putNumber("Limelight/Position/Z", 0);
+        SmartDashboard.putNumber("Limelight/Rotation/Roll", 0);
+        SmartDashboard.putNumber("Limelight/Rotation/Pitch", 0);
+        SmartDashboard.putNumber("Limelight/Rotation/Yaw", 0);
+        SmartDashboard.putNumber("Limelight/Distance", 0);
+    }
+
+    public double calculateDistance(int apriltagID){
+        if (apriltagID == -1) return 0;
+
+        final double TARGET_HEIGHT = m_layout.getTagPose(apriltagID).get().getY();
+        final double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
+        final double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH; //check for accuracy
+
+        double angleToSpeakerEntranceRadians = Math.toRadians( CAMERA_PITCH + getTY());
+        return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceRadians);
+    }
+
+    public void configureAliance(){
+        var allianceColor = DriverStation.getAlliance();
+        int targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
+        table.getEntry("pipeline").setNumber(targetTagID);
+    }
+
+    public void updateLimelightTracking() {
+        table.getEntry("camMode").setNumber(0); // Sets the vision processing mode 
+        table.getEntry("ledMode").setNumber(3); // Forces the LED to stay on always
+    
+    }
 }

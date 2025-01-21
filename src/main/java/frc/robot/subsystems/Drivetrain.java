@@ -71,39 +71,41 @@ public class Drivetrain extends SubsystemBase {
 
 
   //COMPETITIOM MODULES
-   private SwerveModule leftFront = new SwerveModule(
-    Constants.SwerveConstants.LEFT_FRONT_DRIVE_ID, 
-    Constants.SwerveConstants.LEFT_FRONT_TURN_ID, 
-    false, 
-    true, 
-    Constants.SwerveConstants.LEFT_FRONT_CANCODER_ID, 
-    Constants.SwerveConstants.LEFT_FRONT_OFFSET);
+  private SwerveModule leftFront =
+  new SwerveModule(
+      Constants.SwerveConstants.LEFT_FRONT_DRIVE_ID,
+      Constants.SwerveConstants.LEFT_FRONT_TURN_ID,
+      true,//false,
+      true, // true
+      Constants.SwerveConstants.LEFT_FRONT_CANCODER_ID,
+      Constants.SwerveConstants.LEFT_FRONT_OFFSET);
 
-  private SwerveModule rightFront = new SwerveModule(
-    Constants.SwerveConstants.RIGHT_FRONT_DRIVE_ID, 
-    Constants.SwerveConstants.RIGHT_FRONT_TURN_ID, 
-    false, //used to be true, might have to change back - Om: 2/14/24
-    true, 
-    Constants.SwerveConstants.RIGHT_FRONT_CANCODER_ID, 
-    Constants.SwerveConstants.RIGHT_FRONT_OFFSET);
+private SwerveModule rightFront =
+  new SwerveModule(
+      Constants.SwerveConstants.RIGHT_FRONT_DRIVE_ID,
+      Constants.SwerveConstants.RIGHT_FRONT_TURN_ID,
+      true,//false, // used to be true, might have to change back - Om: 2/14/24
+      true,
+      Constants.SwerveConstants.RIGHT_FRONT_CANCODER_ID,
+      Constants.SwerveConstants.RIGHT_FRONT_OFFSET);
 
-  private SwerveModule leftBack = new SwerveModule(
-    Constants.SwerveConstants.LEFT_BACK_DRIVE_ID, 
-    Constants.SwerveConstants.LEFT_BACK_TURN_ID, 
-    true, 
-    true, 
-    Constants.SwerveConstants.LEFT_BACK_CANCODER_ID, 
-    Constants.SwerveConstants.LEFT_BACK_OFFSET);
+private SwerveModule leftBack =
+  new SwerveModule(
+      Constants.SwerveConstants.LEFT_BACK_DRIVE_ID,
+      Constants.SwerveConstants.LEFT_BACK_TURN_ID,
+      false,//true,
+      true,
+      Constants.SwerveConstants.LEFT_BACK_CANCODER_ID,
+      Constants.SwerveConstants.LEFT_BACK_OFFSET);
 
-    private SwerveModule rightBack = new SwerveModule(
-    Constants.SwerveConstants.RIGHT_BACK_DRIVE_ID, 
-    Constants.SwerveConstants.RIGHT_BACK_TURN_ID, 
-    true, 
-    true, 
-    Constants.SwerveConstants.RIGHT_BACK_CANCODER_ID, 
-    Constants.SwerveConstants.RIGHT_BACK_OFFSET);
-
-    
+private SwerveModule rightBack =
+  new SwerveModule(
+      Constants.SwerveConstants.RIGHT_BACK_DRIVE_ID,
+      Constants.SwerveConstants.RIGHT_BACK_TURN_ID,
+      false,
+      true,
+      Constants.SwerveConstants.RIGHT_BACK_CANCODER_ID,
+      Constants.SwerveConstants.RIGHT_BACK_OFFSET);
 
 
   private SlewRateLimiter frontLimiter = new SlewRateLimiter(Constants.SwerveConstants.TELE_DRIVE_MAX_ACCELERATION);
@@ -277,7 +279,7 @@ public class Drivetrain extends SubsystemBase {
     if(useMegaTag2 == false)
     {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-      
+
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
       {
         if(mt1.rawFiducials[0].ambiguity > .7)
@@ -310,17 +312,17 @@ public class Drivetrain extends SubsystemBase {
       {
         doRejectUpdate = true;
       }
-      if(mt2.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
-      if(!doRejectUpdate)
-      {
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-        m_poseEstimator.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
-      }
+      // if(mt2.tagCount == 0)
+      // {
+      //   doRejectUpdate = true;
+      // }
+      // if(!doRejectUpdate)
+      // {
+      //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      //   m_poseEstimator.addVisionMeasurement(
+      //       mt2.pose,
+      //       mt2.timestampSeconds);
+      // }
     }
   }
 
