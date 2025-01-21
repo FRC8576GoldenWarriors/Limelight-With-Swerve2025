@@ -4,11 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.SwerveModule;
 
 public class SpeakerAllignment extends SubsystemBase {
     private final NetworkTable limelightNetworkTable;
@@ -73,14 +72,17 @@ public class SpeakerAllignment extends SubsystemBase {
         return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceRadians);
     }
 
-    @Override
-    public void periodic(){
-        updateLimelightTracking();
-    }
+  
 
     public void updateLimelightTracking() {
         limelightNetworkTable.getEntry("camMode").setNumber(0); // Sets the vision processing mode 
         limelightNetworkTable.getEntry("ledMode").setNumber(3); // Forces the LED to stay on always
     }
+
     
+    
+    @Override
+    public void periodic() {
+        updateLimelightTracking();
+    }
 }

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.commands.AdjustRobotPos;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController; // if using Xbox controller
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;    // for other controllers
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID; // for other controllers
 import frc.robot.commands.AlignToSpeaker;
 // import frc.robot.commands.Climb;
 // import frc.robot.commands.ClimbDown;
@@ -37,15 +37,6 @@ import frc.robot.commands.SwerveDrive;
 // import frc.robot.subsystems.AprilTagStats;
 // import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
-// import frc.robot.subsystems.Intake;
-// import frc.robot.subsystems.IntakeRoller;
-// import frc.robot.subsystems.LEDStrip;
-// import frc.robot.subsystems.PhasingLEDPattern;
-// import frc.robot.subsystems.PhyscialLEDStrip;
-// import frc.robot.subsystems.PoseEstimator;
-// import frc.robot.subsystems.RainbowLEDPattern;
-// import frc.robot.subsystems.Shooter;
-// import frc.robot.subsystems.ShooterRoller;
 import frc.robot.subsystems.Limelight.SpeakerAllignment;
 
 
