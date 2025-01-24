@@ -50,12 +50,12 @@ public final class Constants {
     public static class aprilTagIDConstants{
       public static final int RED_SPEAKER_TAG_ID = 16;
       public static final int BLUE_SPEAKER_TAG_ID = 16;
+      public static final double tagHeightCm = 69.0;
     }
 
    public static class limelightNetworkTableKey{
     public static final String LIMELIGHT_NETWORKTABLE_KEY = "limelight";
    }
-
 
     public static class cameraTranslationConstants {
       //translation of camera in meters (change when camera has been mounted on robot)

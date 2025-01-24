@@ -15,9 +15,10 @@ public class AlignToAprilTag extends Command {
     private Drivetrain drivetrain;
 
     private final PIDController rotationPID;
-    private final PIDController distancePID;
+    private final PIDController forwardPID;
     
     private double targetDistance;
+    private double rotOut, driOut, tx, gyroAngle;
     private CommandXboxController c = new CommandXboxController(Constants.ControllerConstants.kDriverControllerPort);
 
     public AlignToAprilTag(AprilTagStatsLimelight aprilTagStatsLimelight, Drivetrain drivetrain){
@@ -27,9 +28,8 @@ public class AlignToAprilTag extends Command {
         rotationPID = new PIDController(0.03, 0.0001, 0.001);
         rotationPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_ANGLE_ERROR);
 
-        distancePID = new PIDController(0.5, 0.0001, 0.001);
-        distancePID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
-
+        forwardPID = new PIDController(0.5, 0.0001, 0.001);
+        forwardPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
         addRequirements(aprilTagStatsLimelight, drivetrain);
     }
 
@@ -40,18 +40,17 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public void execute(){
-
-
-        double tx = aprilTagStatsLimelight.getTX();
+        tx = aprilTagStatsLimelight.getTX();
         targetDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID());
 
-        double rotationOutput = rotationPID.calculate(tx, 0.0);
-        // double distanceOutput = distancePID.calculate(targetDistance, Constants.VisionConstants.limeLightDistanceConstants.OPTIMAL_SHOOTING_DISTANCE);
+        gyroAngle = drivetrain.getHeading();
 
-        Translation2d translation = new Translation2d(targetDistance, 0.0);
-        //double rotation = rotationOutput;
+                rotOut = -1 * rotationPID.calculate(gyroAngle, gyroAngle+tx);
+                driOut = -0.45 * forwardPID.calculate(aprilTagStatsLimelight.getDistanceLLToGoal(),targetDistance);
 
-        drivetrain.drive(translation, rotationOutput, true, true);
+               
+                drivetrain.drive(new Translation2d(driOut, 0), rotOut, false, true);
+
     }
 
     @Override
@@ -61,6 +60,7 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public boolean isFinished(){
-        return (aprilTagStatsLimelight.hasValidTargets() && rotationPID.atSetpoint() && distancePID.atSetpoint()) || ((targetDistance == 0) || (c.leftTrigger().getAsBoolean()));
+        return (aprilTagStatsLimelight.hasValidTargets() && rotationPID.atSetpoint() && forwardPID.atSetpoint()) ||
+         ((targetDistance == 0) || (c.leftTrigger().getAsBoolean()));
     }
 }

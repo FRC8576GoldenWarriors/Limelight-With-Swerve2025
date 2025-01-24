@@ -6,6 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Drivetrain;
 
 public class AprilTagStatsLimelight extends SubsystemBase {
@@ -21,7 +23,6 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     private final Drivetrain drivetrain;
     private final NetworkTable table;
     private AprilTagFieldLayout m_layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
     public AprilTagStatsLimelight() {
         this.drivetrain = Drivetrain.getInstance();
         this.table = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.limelightNetworkTableKey.LIMELIGHT_NETWORKTABLE_KEY);
@@ -140,14 +141,28 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         final double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
         final double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH; //check for accuracy
 
-        double angleToSpeakerEntranceRadians = Math.toRadians( CAMERA_PITCH + getTY());
-        return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceRadians);
+        double angleToSpeakerEntranceDegrees =  CAMERA_PITCH + getTY();
+        return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceDegrees);
     }
 
     public void configureAliance(){
         var allianceColor = DriverStation.getAlliance();
         int targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
         table.getEntry("pipeline").setNumber(targetTagID);
+    }
+    public double getDistanceLLToGoal(){
+        double goalHeightCm;
+        NetworkTableEntry ty = table.getEntry("ty");
+        double limelightLensHeightCm = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
+        double limelightMountAngleDegrees = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
+
+            goalHeightCm = Constants.VisionConstants.aprilTagIDConstants.tagHeightCm;
+
+        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+        double distanceFromLimelightToGoalCm = (goalHeightCm - limelightLensHeightCm) / Math.tan(angleToGoalRadians);
+        return distanceFromLimelightToGoalCm;
     }
 
     public void updateLimelightTracking() {
