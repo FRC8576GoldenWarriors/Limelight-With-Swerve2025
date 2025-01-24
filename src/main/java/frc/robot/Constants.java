@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,13 +44,13 @@ public final class Constants {
     // change later once we get true mesurements
     public static class limeLightDimensionConstants{
       public static final double CAMERA_HEIGHT = 0.5;  
-      public static final double TARGET_HEIGHT = 2.0; // hight of the speaker
+      //public static final double TARGET_HEIGHT = 2.0; // hight of the speaker
       public static final double CAMERA_PITCH = 30.0;
     }
 
     public static class aprilTagIDConstants{
-      public static final int RED_SPEAKER_TAG_ID = 16;
-      public static final int BLUE_SPEAKER_TAG_ID = 16;
+      public static final int RED_REEF_TAG_IDS = 16;
+      public static final int BLUE_REEF_TAG_IDS = 16;
     }
 
    public static class limelightNetworkTableKey{

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Limelight;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-
+import java.lang.annotation.Target;
+import java.util.List;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -21,6 +21,7 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     private final Drivetrain drivetrain;
     private final NetworkTable table;
     private AprilTagFieldLayout m_layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    private int targetTagID;
 
     public AprilTagStatsLimelight() {
         this.drivetrain = Drivetrain.getInstance();
@@ -64,6 +65,15 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     public int getID() {
         if (hasValidTargets()) return (int) getEntryValue("tid");
         return -1;
+    }
+
+    public double getYaw() {
+        double yaw = 0;
+        Pose3d robot = getBotPose();
+        if (robot == null) {
+            return yaw;
+        }
+        return robot.getRotation().getZ();
     }
 
     public Pose3d getBotPose() {
@@ -144,9 +154,13 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceRadians);
     }
 
+    // public boolean isReefTag() {
+    //     return targetTagID.contains(Integer.valueOf(getID()));
+    // }
+
     public void configureAliance(){
         var allianceColor = DriverStation.getAlliance();
-        int targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
+        targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_REEF_TAG_IDS : Constants.VisionConstants.aprilTagIDConstants.RED_REEF_TAG_IDS;
         table.getEntry("pipeline").setNumber(targetTagID);
     }
 
