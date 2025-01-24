@@ -41,7 +41,7 @@ public class AlignToAprilTag extends Command {
     @Override
     public void execute(){
         tx = aprilTagStatsLimelight.getTX();
-        targetDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID());
+        targetDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())-1;
 
         gyroAngle = drivetrain.getHeading();
 

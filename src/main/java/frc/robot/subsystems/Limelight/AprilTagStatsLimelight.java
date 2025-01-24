@@ -133,7 +133,9 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         SmartDashboard.putNumber("Limelight/Rotation/Yaw", 0);
         SmartDashboard.putNumber("Limelight/Distance", 0);
     }
-
+    public double targetHeight(int id){
+        return m_layout.getTagPose(id).get().getY();
+    }
     public double calculateDistance(int apriltagID){
         if (apriltagID == -1) return 0;
 
@@ -156,7 +158,7 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         double limelightLensHeightCm = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
         double limelightMountAngleDegrees = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
 
-            goalHeightCm = Constants.VisionConstants.aprilTagIDConstants.tagHeightCm;
+            goalHeightCm = targetHeight(getID());
 
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
         double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
