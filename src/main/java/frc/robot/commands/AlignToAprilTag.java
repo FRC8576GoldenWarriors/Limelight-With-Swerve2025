@@ -65,10 +65,10 @@ public class AlignToAprilTag extends Command {
         //match the angle of the tag
         double targetYaw = aprilTagStatsLimelight.getTX();
         double rotate = rotationPID.calculate(drivetrain.getHeading(), targetYaw);
-
+        //move inline with the tag
         double sideDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID()) * Math.tan(Math.toRadians(targetYaw));
         double sideSpeed = sidePID.calculate(sideDistance,0);
-
+        //move to a set distance in front of the tag
         double forwardDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID());
         double forwardSpeed = forwardPID.calculate(forwardDistance, Constants.VisionConstants.distanceConstants.goalMeterDistance);
 
