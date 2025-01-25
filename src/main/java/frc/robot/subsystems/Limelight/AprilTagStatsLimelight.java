@@ -24,11 +24,12 @@ public class AprilTagStatsLimelight extends SubsystemBase {
 
     private final Drivetrain drivetrain;
     private final NetworkTable table;
-    private AprilTagFieldLayout m_layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    //private AprilTagFieldLayout m_layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
     public AprilTagStatsLimelight() {
         this.drivetrain = Drivetrain.getInstance();
         this.table = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.limelightNetworkTableKey.LIMELIGHT_NETWORKTABLE_KEY);
-        configureAliance();
+        //configureAliance();
     }
 
 
@@ -106,6 +107,13 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         return pose != null ? pose.getRotation().getY() : 0.0;
     }
 
+    public double getTagHeight(int id){
+        if (Constants.VisionConstants.aprilTagConstants.IDs.REEF_TAG_IDS.contains(id)) return Constants.VisionConstants.aprilTagConstants.heights.REEF_TAG_HEIGHT;
+        else if (Constants.VisionConstants.aprilTagConstants.IDs.BARGE_TAG_IDS.contains(id)) return Constants.VisionConstants.aprilTagConstants.heights.BARGE_TAG_HEIGHT;
+        else if (Constants.VisionConstants.aprilTagConstants.IDs.PROCESSOR_TAG_IDS.contains(id)) return Constants.VisionConstants.aprilTagConstants.heights.PROCESSOR_TAG_HEIGHT;
+        else return Constants.VisionConstants.aprilTagConstants.heights.CORAL_STATION_TAG_HEIGHT;
+    }
+
     private void updateRobotPoseInSmartDashboard() {
         boolean hasTarget = hasValidTargets();
         SmartDashboard.putBoolean("Limelight/Has Target", hasTarget);
@@ -139,42 +147,25 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         SmartDashboard.putNumber("Limelight/Rotation/Yaw", 0);
         SmartDashboard.putNumber("Limelight/Distance", 0);
     }
-    public double targetHeight(int id){
-        return m_layout.getTagPose(id).get().getY();
-    }
     public double calculateDistance(int apriltagID){
+        //Not meant for targets that are close to the same height as the camera
         if (apriltagID == -1) return 0;
 
-        double TARGET_HEIGHT = m_layout.getTagPose(apriltagID).get().getY();
+        double TARGET_HEIGHT = this.getTagHeight(getID());
         double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
         double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
-        SmartDashboard.putNumber("Target Height", TARGET_HEIGHT);
 
-        SmartDashboard.putString("AprilTag", m_layout.getTagPose(apriltagID).get().toString());
-        double angleToSpeakerEntranceDegrees =  Math.toRadians(CAMERA_PITCH + getTY());
-        
-        return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceDegrees);
+        double angleToSpeakerEntranceDegrees = Math.toRadians(CAMERA_PITCH + getTY());
+        double heightDifferenceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) * 39.37;
+
+        return Math.abs((heightDifferenceInches) / Math.tan(angleToSpeakerEntranceDegrees));
     }
 
-    public void configureAliance(){
-        var allianceColor = DriverStation.getAlliance();
-        int targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
-        table.getEntry("pipeline").setNumber(targetTagID);
-    }
-    public double getDistanceLLToGoal(){
-        double goalHeightCm;
-        NetworkTableEntry ty = table.getEntry("ty");
-        double limelightLensHeightCm = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
-        double limelightMountAngleDegrees = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
-
-            goalHeightCm = targetHeight(getID());
-
-        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-        double distanceFromLimelightToGoalCm = (goalHeightCm - limelightLensHeightCm) / Math.tan(angleToGoalRadians);
-        return distanceFromLimelightToGoalCm;
-    }
+    // public void configureAliance(){
+    //     var allianceColor = DriverStation.getAlliance();
+    //     int targetTagID = (allianceColor.get() == Alliance.Blue) ? Constants.VisionConstants.aprilTagIDConstants.BLUE_SPEAKER_TAG_ID : Constants.VisionConstants.aprilTagIDConstants.RED_SPEAKER_TAG_ID;
+    //     table.getEntry("pipeline").setNumber(targetTagID);
+    // }
 
     public void updateLimelightTracking() {
         table.getEntry("camMode").setNumber(0); // Sets the vision processing mode 

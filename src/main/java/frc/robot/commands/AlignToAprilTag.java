@@ -19,9 +19,14 @@ public class AlignToAprilTag extends Command {
 
     private final PIDController rotationPID;
     private final PIDController forwardPID;
+
+    private double driveOutput;
+    private double rotationOutput;
     
-    private double targetDistance;
-    private double rotOut, driOut, tx, gyroAngle;
+    private double currentDistance;
+    private double tx;
+    private double goalDistance;
+
     private CommandXboxController c = new CommandXboxController(Constants.ControllerConstants.kDriverControllerPort);
 
     public AlignToAprilTag(AprilTagStatsLimelight aprilTagStatsLimelight, Drivetrain drivetrain){
@@ -45,24 +50,16 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public void execute(){
+
         tx = aprilTagStatsLimelight.getTX();
-        targetDistance = Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())-Constants.VisionConstants.distanceConstants.goalMeterDistance);
+        currentDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID());
+        goalDistance = Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE;
 
-        gyroAngle = drivetrain.getHeading();
-
-                //rotOut = -1 * rotationPID.calculate(gyroAngle, gyroAngle+tx);
-                double rotationOutput = rotationPID.calculate(tx, 0);
-                double driveOutput = forwardPID.calculate(Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())),
-                    Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE);//targetDistance);
-
-                if(Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID()))
-                <=Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE){
-                    driveOutput=0;
-                }
-
-               
-                drivetrain.drive(new Translation2d(driveOutput, 0), rotationOutput, false, true);
-                SmartDashboard.putNumber("Vision PID Drive output",driveOutput);
+        rotationOutput = rotationPID.calculate(tx, 0);
+        driveOutput = (currentDistance <= goalDistance) ? 0 : forwardPID.calculate(currentDistance, goalDistance);
+        
+        drivetrain.drive(new Translation2d(driveOutput, 0), rotationOutput, false, true);
+        SmartDashboard.putNumber("Vision PID Drive output",driveOutput);
 
     }
 
@@ -74,6 +71,6 @@ public class AlignToAprilTag extends Command {
     @Override
     public boolean isFinished(){
         return (aprilTagStatsLimelight.hasValidTargets() && rotationPID.atSetpoint() && forwardPID.atSetpoint()) ||
-         ((targetDistance == 0) || (c.leftTrigger().getAsBoolean()));
+         ((currentDistance == 0) || (c.leftTrigger().getAsBoolean()));
     }
 }
