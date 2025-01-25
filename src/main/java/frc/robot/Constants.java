@@ -34,7 +34,7 @@ public final class Constants {
 
   public static class VisionConstants {
     public static class limeLightDistanceConstants{
-      public static final double OPTIMAL_SHOOTING_DISTANCE = 2.0;
+      public static final double DESIRED_APRIL_TAG_DISTANCE = 1.0;
       public static final double ALLOWED_ANGLE_ERROR = 2.0;
       public static final double ALLOWED_DISTANCE_ERROR = 0.1;
     }
@@ -42,9 +42,9 @@ public final class Constants {
     // In meters and degrees
     // change later once we get true mesurements
     public static class limeLightDimensionConstants{
-      public static final double CAMERA_HEIGHT = 0.5;  
-      public static final double TARGET_HEIGHT = 2.0; // hight of the speaker
-      public static final double CAMERA_PITCH = 30.0;
+      public static final double CAMERA_HEIGHT = 0.267;  
+      //public static final double TARGET_HEIGHT = 2.0; // hight of the speaker
+      public static final double CAMERA_PITCH = 0;
     }
 
     public static class aprilTagIDConstants{
@@ -71,7 +71,7 @@ public final class Constants {
     }
 
     public static class distanceConstants {
-      public static final double goalMeterDistance = 3.0;
+      public static final double goalMeterDistance = 0.5;
       public static final double visionAngleDegrees = 0.0;
       public static final List<Integer> useableIDs = Arrays.asList(4,7);
     }

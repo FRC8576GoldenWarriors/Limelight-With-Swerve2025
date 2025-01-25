@@ -1,7 +1,10 @@
 package frc.robot.commands;
 
+import java.io.ObjectInputStream.GetField;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -25,11 +28,13 @@ public class AlignToAprilTag extends Command {
         this.aprilTagStatsLimelight = aprilTagStatsLimelight;
         this.drivetrain = drivetrain;
 
-        rotationPID = new PIDController(0.03, 0.0001, 0.001);
+        rotationPID = new PIDController(0.06, 0.0001, 0.001);
         rotationPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_ANGLE_ERROR);
 
-        forwardPID = new PIDController(0.5, 0.0001, 0.001);
+        forwardPID = new PIDController(2.0, 0.0001, 0.001);
         forwardPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
+
+
         addRequirements(aprilTagStatsLimelight, drivetrain);
     }
 
@@ -41,15 +46,23 @@ public class AlignToAprilTag extends Command {
     @Override
     public void execute(){
         tx = aprilTagStatsLimelight.getTX();
-        targetDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())-1;
+        targetDistance = Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())-Constants.VisionConstants.distanceConstants.goalMeterDistance);
 
         gyroAngle = drivetrain.getHeading();
 
-                rotOut = -1 * rotationPID.calculate(gyroAngle, gyroAngle+tx);
-                driOut = -0.45 * forwardPID.calculate(aprilTagStatsLimelight.getDistanceLLToGoal(),targetDistance);
+                //rotOut = -1 * rotationPID.calculate(gyroAngle, gyroAngle+tx);
+                double rotationOutput = rotationPID.calculate(tx, 0);
+                double driveOutput = forwardPID.calculate(Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID())),
+                    Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE);//targetDistance);
+
+                if(Math.abs(aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID()))
+                <=Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE){
+                    driveOutput=0;
+                }
 
                
-                drivetrain.drive(new Translation2d(driOut, 0), rotOut, false, true);
+                drivetrain.drive(new Translation2d(driveOutput, 0), rotationOutput, false, true);
+                SmartDashboard.putNumber("Vision PID Drive output",driveOutput);
 
     }
 

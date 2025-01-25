@@ -7,9 +7,11 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -85,7 +87,11 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     }
 
     private double getEntryValue(String entryName) {
-        return table.getEntry(entryName).getDouble(0.0);
+        NetworkTableEntry val = table.getEntry(entryName);
+        if (val == null) {
+            return 0;
+        }
+        return val.getDouble(0.0);
     }
 
     private void updateValues(double x, double y, double area, double id) {
@@ -139,11 +145,14 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     public double calculateDistance(int apriltagID){
         if (apriltagID == -1) return 0;
 
-        final double TARGET_HEIGHT = m_layout.getTagPose(apriltagID).get().getY();
-        final double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
-        final double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH; //check for accuracy
+        double TARGET_HEIGHT = m_layout.getTagPose(apriltagID).get().getY();
+        double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
+        double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
+        SmartDashboard.putNumber("Target Height", TARGET_HEIGHT);
 
-        double angleToSpeakerEntranceDegrees =  CAMERA_PITCH + getTY();
+        SmartDashboard.putString("AprilTag", m_layout.getTagPose(apriltagID).get().toString());
+        double angleToSpeakerEntranceDegrees =  Math.toRadians(CAMERA_PITCH + getTY());
+        
         return (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(angleToSpeakerEntranceDegrees);
     }
 
