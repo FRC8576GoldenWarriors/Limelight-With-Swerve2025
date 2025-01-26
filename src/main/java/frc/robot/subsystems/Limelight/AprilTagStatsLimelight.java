@@ -49,6 +49,9 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         updateValues(x, y, area, id);
     }
 
+
+    
+
     public double getTX() {
         return getEntryValue("tx");
     }
@@ -135,7 +138,6 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         SmartDashboard.putNumber("Limelight/Rotation/Roll", Math.toDegrees(pose.getRotation().getX()));
         SmartDashboard.putNumber("Limelight/Rotation/Pitch", Math.toDegrees(pose.getRotation().getY()));
         SmartDashboard.putNumber("Limelight/Rotation/Yaw", Math.toDegrees(pose.getRotation().getZ()));
-        SmartDashboard.putNumber("Limelight/Distance", calculateDistance(getID()));
     }
 
     private void clearPoseDashboard() {
@@ -147,19 +149,29 @@ public class AprilTagStatsLimelight extends SubsystemBase {
         SmartDashboard.putNumber("Limelight/Rotation/Yaw", 0);
         SmartDashboard.putNumber("Limelight/Distance", 0);
     }
-    public double calculateDistance(int apriltagID){
-        //Not meant for targets that are close to the same height as the camera
-        if (apriltagID == -1) return 0;
+    // public double calculateDistance(int apriltagID){
+    //     //Not meant for targets that are close to the same height as the camera
+    //     if (apriltagID == -1) return 0;
 
-        double TARGET_HEIGHT = this.getTagHeight(getID());
-        double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
-        double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
+    //     double TARGET_HEIGHT = this.getTagHeight(getID());
+    //     double CAMERA_HEIGHT = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_HEIGHT;
+    //     double CAMERA_PITCH = Constants.VisionConstants.limeLightDimensionConstants.CAMERA_PITCH;
 
-        double angleToSpeakerEntranceDegrees = Math.toRadians(CAMERA_PITCH + getTY());
-        double heightDifferenceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) * 39.37;
+    //     double angleToSpeakerEntranceDegrees = Math.toRadians(CAMERA_PITCH + getTY());
+    //     double heightDifferenceInches = (TARGET_HEIGHT - CAMERA_HEIGHT) * 39.37;
+    
 
-        return Math.abs((heightDifferenceInches) / Math.tan(angleToSpeakerEntranceDegrees));
+    //     return Math.abs((heightDifferenceInches) / Math.tan(angleToSpeakerEntranceDegrees))/39.97;
+    // }
+
+    public double calculateDistance(int aprilTagID, double focalLength, double realWidth, double pixelWidth){
+        if(aprilTagID != 0){
+            return (focalLength * realWidth) / pixelWidth;
+        } else {
+            return 0.0;
+        }
     }
+
 
     // public void configureAliance(){
     //     var allianceColor = DriverStation.getAlliance();

@@ -35,8 +35,8 @@ public final class Constants {
 
   public static class VisionConstants {
     public static class limeLightDistanceConstants{
-      public static final double DESIRED_APRIL_TAG_DISTANCE = 1.0;
-      public static final double ALLOWED_ANGLE_ERROR = 2.0;
+      public static final double DESIRED_APRIL_TAG_DISTANCE = 0.3;
+      public static final double ALLOWED_ANGLE_ERROR = 0.1;
       public static final double ALLOWED_DISTANCE_ERROR = 0.1;
     }
 
@@ -69,6 +69,12 @@ public final class Constants {
     public static final String LIMELIGHT_NETWORKTABLE_KEY = "limelight";
    }
 
+   public static class limelightCameraDimensions{
+    public static final double FOCAL_LENGTH = 4.1;
+    public static final double REAL_WIDTH = 165.0;
+    public static final double PIXEL_WIDTH = 320.0;
+   }
+
     public static class cameraTranslationConstants {
       //translation of camera in meters (change when camera has been mounted on robot)
       public static final double tX = -32 * 0.01;
@@ -83,7 +89,7 @@ public final class Constants {
     }
 
     public static class distanceConstants {
-      public static final double goalMeterDistance = 0.5;
+      public static final double goalMeterDistance = 0.1;
       public static final double visionAngleDegrees = 0.0;
       public static final List<Integer> useableIDs = Arrays.asList(4,7);
     }
@@ -123,7 +129,7 @@ public final class Constants {
       public static final double kVisionStdDevTheta = 1;
     }
 
-    public static final int ROTATION_CURRENT_LIMIT = 30;
+    public static final int ROTATION_CURRENT_LIMIT = 20;
     public static final int DRIVE_CURRENT_LIMIT = 45;
     //PRACTICE IDS
     // public static final int LEFT_FRONT_DRIVE_ID = 7;

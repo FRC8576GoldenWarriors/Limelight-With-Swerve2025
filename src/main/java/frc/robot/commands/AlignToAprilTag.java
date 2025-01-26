@@ -20,9 +20,19 @@ public class AlignToAprilTag extends Command {
     private final PIDController rotationPID;
     private final PIDController forwardPID;
 
+
+    private final double focalLength = Constants.VisionConstants.limelightCameraDimensions.FOCAL_LENGTH;
+    private final double pixelWidth = Constants.VisionConstants.limelightCameraDimensions.PIXEL_WIDTH;
+    private final double realWidth = Constants.VisionConstants.limelightCameraDimensions.REAL_WIDTH;
+
     private double driveOutput;
+    private double detectedWidth;
+    
+
     private double rotationOutput;
     
+    private double callibrationFactor = 1.2;
+
     private double currentDistance;
     private double tx;
     private double goalDistance;
@@ -36,7 +46,7 @@ public class AlignToAprilTag extends Command {
         rotationPID = new PIDController(0.06, 0.0001, 0.001);
         rotationPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_ANGLE_ERROR);
 
-        forwardPID = new PIDController(2.0, 0.0001, 0.001);
+        forwardPID = new PIDController(1.0, 0.0001, 0.001);
         forwardPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
 
 
@@ -51,9 +61,16 @@ public class AlignToAprilTag extends Command {
     @Override
     public void execute(){
 
+
+        detectedWidth = realWidth * Math.sqrt(aprilTagStatsLimelight.getArea()) / (pixelWidth * focalLength * callibrationFactor);
+
         tx = aprilTagStatsLimelight.getTX();
-        currentDistance = aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID());
+        currentDistance = (aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID(), focalLength, realWidth, detectedWidth) * 2) / 10000;
         goalDistance = Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE;
+
+
+        SmartDashboard.putNumber("Tag distance", currentDistance);
+
 
         rotationOutput = rotationPID.calculate(tx, 0);
         driveOutput = (currentDistance <= goalDistance) ? 0 : forwardPID.calculate(currentDistance, goalDistance);

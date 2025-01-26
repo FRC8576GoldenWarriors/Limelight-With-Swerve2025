@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.text.DecimalFormat;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
@@ -24,11 +25,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.collections.ReadOnlyPrimitiveLongSet;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -69,6 +72,11 @@ public class Drivetrain extends SubsystemBase {
   //   Constants.SwerveConstants.RIGHT_BACK_CANCODER_ID, 
   //   Constants.SwerveConstants.RIGHT_BACK_OFFSET);
 
+
+  private final StructArrayPublisher<SwerveModuleState> m_ModuleStatePublisherIn;
+  private final StructArrayPublisher<SwerveModuleState> m_ModuleStatePublisherActual;
+
+  private Field2d m_Field2d;
 
   //COMPETITIOM MODULES
   private SwerveModule leftFront =
@@ -138,6 +146,14 @@ private SwerveModule rightBack =
 
   /** Creates a new SwerveDrivetrain. */
   public Drivetrain() {
+
+    m_Field2d = new Field2d();
+    SmartDashboard.putData("GWR_Field", m_Field2d);
+
+    m_ModuleStatePublisherIn = NetworkTableInstance.getDefault().getTable("24Karat").getStructArrayTopic("SwerveStates/In", SwerveModuleState.struct).publish();
+    m_ModuleStatePublisherActual = NetworkTableInstance.getDefault().getTable("24Karat").getStructArrayTopic("SwerveStates/Actual", SwerveModuleState.struct).publish();
+
+
     new Thread(() -> {
       try{
         Thread.sleep(1000);
@@ -177,6 +193,7 @@ private SwerveModule rightBack =
       }
     });
     m_publisher = NetworkTableInstance.getDefault().getStructTopic(Constants.VisionConstants.nameConstants.publishName, Pose2d.struct).publish();
+    
   }
 
   @Override
@@ -186,6 +203,8 @@ private SwerveModule rightBack =
     
     double yaw = gyro.getYaw().getValueAsDouble();
     SmartDashboard.putNumber("Robot Angle", getHeading());
+
+    m_ModuleStatePublisherActual.set(getModuleStates());
     //rates 2 is yaw (XYZ in order )
     /*SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((yaw/ 180)) + "pi rad/s");
     // Logger.recordOutput("Robot Angle", getHeading());
@@ -262,6 +281,7 @@ private SwerveModule rightBack =
     SwerveModuleState[] moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerOfRotation);
 
     setModuleStates(moduleStates);
+    m_ModuleStatePublisherIn.set(getModuleStates());
   }
     public void updatePose() {
     m_poseEstimator.update(
