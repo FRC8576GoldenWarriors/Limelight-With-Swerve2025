@@ -36,7 +36,7 @@ public final class Constants {
   public static class VisionConstants {
     public static class limeLightDistanceConstants{
       public static final double DESIRED_APRIL_TAG_DISTANCE = 0.3;
-      public static final double ALLOWED_ANGLE_ERROR = 0.1;
+      public static final double ALLOWED_ANGLE_ERROR = 0.01;
       public static final double ALLOWED_DISTANCE_ERROR = 0.1;
     }
 

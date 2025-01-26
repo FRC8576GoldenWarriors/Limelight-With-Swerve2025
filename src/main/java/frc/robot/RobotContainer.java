@@ -93,7 +93,7 @@ public class RobotContainer {
 
 
     // This command will execute whenever the d-pad up button is pressed
-    driverController.povUp().and(() -> aprilTagStatsLimelight.hasValidTargets()).whileTrue(AlignToAprilTag);
+    driverController.leftBumper().and(() -> aprilTagStatsLimelight.hasValidTargets()).whileTrue(AlignToAprilTag);
 
     resetHeading_Start.onTrue(
       new InstantCommand(drivetrain::zeroHeading, drivetrain));

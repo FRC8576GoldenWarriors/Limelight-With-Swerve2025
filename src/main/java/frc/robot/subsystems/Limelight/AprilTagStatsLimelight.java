@@ -164,8 +164,8 @@ public class AprilTagStatsLimelight extends SubsystemBase {
     //     return Math.abs((heightDifferenceInches) / Math.tan(angleToSpeakerEntranceDegrees))/39.97;
     // }
 
-    public double calculateDistance(int aprilTagID, double focalLength, double realWidth, double pixelWidth){
-        if(aprilTagID != 0){
+    public double calculateDistance(double focalLength, double realWidth, double pixelWidth){
+        if(hasValidTargets()){
             return (focalLength * realWidth) / pixelWidth;
         } else {
             return 0.0;

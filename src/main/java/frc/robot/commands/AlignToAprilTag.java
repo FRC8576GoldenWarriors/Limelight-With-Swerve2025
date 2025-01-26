@@ -19,6 +19,7 @@ public class AlignToAprilTag extends Command {
 
     private final PIDController rotationPID;
     private final PIDController forwardPID;
+    private final PIDController sidePID;
 
 
     private final double focalLength = Constants.VisionConstants.limelightCameraDimensions.FOCAL_LENGTH;
@@ -43,11 +44,14 @@ public class AlignToAprilTag extends Command {
         this.aprilTagStatsLimelight = aprilTagStatsLimelight;
         this.drivetrain = drivetrain;
 
-        rotationPID = new PIDController(0.06, 0.0001, 0.001);
+        rotationPID = new PIDController(0.08, 0.008, 0.001);
         rotationPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_ANGLE_ERROR);
 
-        forwardPID = new PIDController(1.0, 0.0001, 0.001);
+        forwardPID = new PIDController(1.5, 0.001, 0.001);
         forwardPID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
+
+        sidePID = new PIDController(1.5, 0.001, 0.001);
+        sidePID.setTolerance(Constants.VisionConstants.limeLightDistanceConstants.ALLOWED_DISTANCE_ERROR);
 
 
         addRequirements(aprilTagStatsLimelight, drivetrain);
@@ -65,7 +69,7 @@ public class AlignToAprilTag extends Command {
         detectedWidth = realWidth * Math.sqrt(aprilTagStatsLimelight.getArea()) / (pixelWidth * focalLength * callibrationFactor);
 
         tx = aprilTagStatsLimelight.getTX();
-        currentDistance = (aprilTagStatsLimelight.calculateDistance(aprilTagStatsLimelight.getID(), focalLength, realWidth, detectedWidth) * 2) / 10000;
+        currentDistance = aprilTagStatsLimelight.calculateDistance(focalLength, realWidth, detectedWidth) * 0.0002;
         goalDistance = Constants.VisionConstants.limeLightDistanceConstants.DESIRED_APRIL_TAG_DISTANCE;
 
 
@@ -73,10 +77,21 @@ public class AlignToAprilTag extends Command {
 
 
         rotationOutput = rotationPID.calculate(tx, 0);
-        driveOutput = (currentDistance <= goalDistance) ? 0 : forwardPID.calculate(currentDistance, goalDistance);
+        // if(rotationOutput<0){
+        //     rotationOutput+=(-0.04);
+        // }
+        // else{
+        //     rotationOutput+=0.04;
+        // }
         
-        drivetrain.drive(new Translation2d(driveOutput, 0), rotationOutput, false, true);
-        SmartDashboard.putNumber("Vision PID Drive output",driveOutput);
+        driveOutput = (currentDistance <= goalDistance) ? 0 : forwardPID.calculate(currentDistance, goalDistance);
+        double sideOutput = sidePID.calculate(goalDistance * Math.sin(Math.toRadians(tx)),0); 
+        
+        drivetrain.drive(new Translation2d(driveOutput, sideOutput), rotationOutput, false, true);
+        SmartDashboard.putNumber("Vision PID Drive output", driveOutput);
+        SmartDashboard.putNumber("Vision PID Rotate output", rotationOutput);
+        SmartDashboard.putNumber("Vision PID Side output", sideOutput);
+        SmartDashboard.putNumber("Side distance", goalDistance * Math.sin(Math.toRadians(tx)));
 
     }
 
