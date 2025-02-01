@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
-//import edu.wpi.first.wpilibj.XboxController;
+// import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
@@ -27,12 +27,18 @@ public class SwerveDrive extends Command {
   @Override
   public void execute() {
     RobotContainer.drivetrain.swerveDrive(
-      -RobotContainer.driverController.getLeftY() * Math.abs(RobotContainer.driverController.getLeftY()) * 1.8, //2.25
-      -RobotContainer.driverController.getLeftX() * Math.abs(RobotContainer.driverController.getLeftX()) * 1.8, //2.25
-      -RobotContainer.driverController.getRightX() * Math.abs(RobotContainer.driverController.getRightX()) * 1.5, //1.75
-      true, //!RobotContainer.driverController.getHID().getRawButton(XboxController.Button.kB.value)
-      new Translation2d(),
-      true);
+        -RobotContainer.driverController.getLeftY()
+            * Math.abs(RobotContainer.driverController.getLeftY())
+            * 1.8, // 2.25
+        -RobotContainer.driverController.getLeftX()
+            * Math.abs(RobotContainer.driverController.getLeftX())
+            * 1.8, // 2.25
+        -RobotContainer.driverController.getRightX()
+            * Math.abs(RobotContainer.driverController.getRightX())
+            * 1.5, // 1.75
+        true, // !RobotContainer.driverController.getHID().getRawButton(XboxController.Button.kB.value)
+        new Translation2d(),
+        true);
   }
 
   // Called once the command ends or is interrupted.

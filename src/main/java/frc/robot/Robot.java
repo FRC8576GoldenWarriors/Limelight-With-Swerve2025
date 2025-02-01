@@ -12,12 +12,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight.AprilTagStatsLimelight;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,10 +32,12 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  //private UsbCamera camera;
+  // private UsbCamera camera;
 
-//   public static final AddressableLED m_led = new AddressableLED(Constants.LEDConstants.LED_PORT1);
-//  public static final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(Constants.LEDConstants.LedLength1);
+  //   public static final AddressableLED m_led = new
+  // AddressableLED(Constants.LEDConstants.LED_PORT1);
+  //  public static final AddressableLEDBuffer m_ledBuffer = new
+  // AddressableLEDBuffer(Constants.LEDConstants.LedLength1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +60,6 @@ public class Robot extends TimedRobot {
 
     // m_led.start();
     m_robotContainer = new RobotContainer();
-   
   }
 
   /**
@@ -72,30 +71,29 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-  //   if(RobotContainer.m_IntakeRoller.getDigitalInput().get()){
-  //     for(var i=0; i<Constants.LEDConstants.LedLength1; i++){
-  //       //gold. no note
-  //       m_ledBuffer.setHSV(i, 45, 100, 100);
-  //     }
-      
-  //   }
-  //   else{
-  //     for(var i=0; i<Constants.LEDConstants.LedLength1; i++){
-  //       //green. note intaked
-  //       m_ledBuffer.setHSV(i, 126, 69, 100);
-  //     }
-  //  }
-  //   m_led.setData(m_ledBuffer);
+    //   if(RobotContainer.m_IntakeRoller.getDigitalInput().get()){
+    //     for(var i=0; i<Constants.LEDConstants.LedLength1; i++){
+    //       //gold. no note
+    //       m_ledBuffer.setHSV(i, 45, 100, 100);
+    //     }
+
+    //   }
+    //   else{
+    //     for(var i=0; i<Constants.LEDConstants.LedLength1; i++){
+    //       //green. note intaked
+    //       m_ledBuffer.setHSV(i, 126, 69, 100);
+    //     }
+    //  }
+    //   m_led.setData(m_ledBuffer);
 
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    
 
     CommandScheduler.getInstance().run();
     limelight.updateStats();
@@ -105,7 +103,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     // m_robotContainer.ledStrip.usePattern(new PhasingLEDPattern(new Color8Bit(255, 90, 0), 0.5));
-    //RobotContainer.m_Climber.setCoast();
+    // RobotContainer.m_Climber.setCoast();
   }
 
   @Override
@@ -122,9 +120,8 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    }
-    else{
-      //RobotContainer.m_Intake.zeroEncoder();
+    } else {
+      // RobotContainer.m_Intake.zeroEncoder();
     }
     drivetrain.zeroHeading();
   }
@@ -146,15 +143,14 @@ public class Robot extends TimedRobot {
     drivetrain.resetAllEncoders();
     drivetrain.setAllIdleMode(true);
 
-    //RobotContainer.m_Shooter.zeroEncoder();
+    // RobotContainer.m_Shooter.zeroEncoder();
 
-    //RobotContainer.m_ShooterRoller.setSpeed(0.2);
+    // RobotContainer.m_ShooterRoller.setSpeed(0.2);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

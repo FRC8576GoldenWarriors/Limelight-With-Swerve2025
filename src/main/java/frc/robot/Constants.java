@@ -2,10 +2,9 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+//spotless:off
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public final class Constants {
     // In meters and degrees
     // change later once we get true mesurements
     public static class limeLightDimensionConstants{
-      public static final double CAMERA_HEIGHT = 0.267;  
+      public static final double CAMERA_HEIGHT = 0.267;
       //public static final double TARGET_HEIGHT = 2.0; // hight of the speaker
       public static final double CAMERA_PITCH = 0;
     }
@@ -55,7 +54,7 @@ public final class Constants {
         public static final List<Integer> PROCESSOR_TAG_IDS = Arrays.asList(3, 16);
         public static final List<Integer> CORAL_STATION_TAG_IDS = Arrays.asList(1, 2, 12, 13);
       }
-      
+
       public static class heights {
         //In meters
         public static final double REEF_TAG_HEIGHT = 0.305;
@@ -136,10 +135,10 @@ public final class Constants {
     // public static final int RIGHT_FRONT_DRIVE_ID = 1;
     // public static  final int LEFT_BACK_DRIVE_ID = 4;
     // public static final int RIGHT_BACK_DRIVE_ID = 3;
-    
+
     // public static final int LEFT_FRONT_TURN_ID = 6;
     // public static final int RIGHT_FRONT_TURN_ID = 8;
-    // public static  final int LEFT_BACK_TURN_ID = 5; 
+    // public static  final int LEFT_BACK_TURN_ID = 5;
     // public static final int RIGHT_BACK_TURN_ID = 2;
 
     // public static final int LEFT_FRONT_CANCODER_ID = 2;
@@ -156,12 +155,12 @@ public final class Constants {
      public static final int RIGHT_FRONT_DRIVE_ID = 1;
      public static final int LEFT_BACK_DRIVE_ID = 4; // 5
      public static final int RIGHT_BACK_DRIVE_ID = 3; // 3
-    
+
      public static final int LEFT_FRONT_TURN_ID = 6;
      public static final int RIGHT_FRONT_TURN_ID = 8;
-     public static  final int LEFT_BACK_TURN_ID = 5; // 4 
+     public static  final int LEFT_BACK_TURN_ID = 5; // 4
      public static final int RIGHT_BACK_TURN_ID = 2; // 2
-    
+
     public static final int LEFT_FRONT_CANCODER_ID = 3;
     public static final int RIGHT_FRONT_CANCODER_ID = 4;
     public static final int LEFT_BACK_CANCODER_ID = 0; // 2
@@ -178,11 +177,10 @@ public final class Constants {
     // public static  double RIGHT_BACK_OFFSET = 0.731201;
 
     //COMP OFFSETS
-    public static double LEFT_FRONT_OFFSET = 0.499023;//-0.482422; // -0.344971;//0.228027;
-    public static double RIGHT_FRONT_OFFSET = 0.011475;//-0.482178; // -0.397217;//-0.099609;
-    public static double LEFT_BACK_OFFSET = -0.000244;//0.478027;//0.000977; // 0.032959;//-0.000244;
-    public static double RIGHT_BACK_OFFSET = -0.024902;//0.479736; // -0.324463;//-0.113525;
-
+    public static double LEFT_FRONT_OFFSET = 0.499023; // -0.482422; // -0.344971;//0.228027;
+    public static double RIGHT_FRONT_OFFSET = 0.011475; // -0.482178; // -0.397217;//-0.099609;
+    public static double LEFT_BACK_OFFSET = -0.000244; // 0.478027;//0.000977; // 0.032959;//-0.000244;
+    public static double RIGHT_BACK_OFFSET = -0.024902;
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4.00); //originally 4 in template
     public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
     public static final double TURN_MOTOR_GEAR_RATIO = 150.0/7;
@@ -244,13 +242,13 @@ public final class Constants {
     public static final double kRollerInSpeed = 0.8;
     public static final double kRollerOutSpeed = -0.5;
 
-    public static final double kArmUpSpeed = -0.65; 
-    public static final double kArmDownSpeed = 0.5; 
+    public static final double kArmUpSpeed = -0.65;
+    public static final double kArmDownSpeed = 0.5;
 
     //PRACTICE ROLLER
     // public static final double kRollerInSpeed = -0.50;
     // public static final double kRollerOutSpeed = 0.65;
-    
+
     // public static final double kArmUpSpeed = 0.5;
     // public static final double kArmDownSpeed = -0.45;
 

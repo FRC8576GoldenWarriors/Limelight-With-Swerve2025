@@ -11,7 +11,8 @@
 
 //     public ShooterAlignment(Shooter shooterSubystem){
 //         this.shooterSubsystem = shooterSubystem;
-//         this.pidController = new PIDController(0.1, 0.0, 0.0); // Make sure to tune these values later
+//         this.pidController = new PIDController(0.1, 0.0, 0.0); // Make sure to tune these values
+// later
 
 //         addRequirements(shooterSubystem);
 //     }
@@ -19,18 +20,19 @@
 //     @Override
 //     public void execute(){
 //         double tx = AprilTagStatsLimelight.getTX();
-//         double adjustment = pidController.calculate(tx, 0); // When tx = 0 the robot is aligned to the tag
+//         double adjustment = pidController.calculate(tx, 0); // When tx = 0 the robot is aligned
+// to the tag
 //         //shooterSubsystem.setPivotSpeed(adjustment);
 //     }
 
 //     @Override
 //     public boolean isFinished(){
-//         return false; // This will keep adjusting the shooter until the command is interrupted 
+//         return false; // This will keep adjusting the shooter until the command is interrupted
 //     }
 
 //     @Override
 //     public void end(boolean interrupted){
 //         shooterSubsystem.stop();
 //     }
-    
+
 // }

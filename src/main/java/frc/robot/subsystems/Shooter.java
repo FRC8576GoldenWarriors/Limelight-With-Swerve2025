@@ -4,13 +4,9 @@
 
 package frc.robot.subsystems;
 
-
-
-
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,10 +15,8 @@ import frc.lib.drivers.WarriorSparkMax;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-  
 
   private WarriorSparkMax pivotMotor;
-  
 
   private DutyCycleEncoder shooterEncoder;
 
@@ -31,57 +25,58 @@ public class Shooter extends SubsystemBase {
 
   // private double setpoint_rad;
   // private boolean homing = true;
- 
-  //private CANSparkMax pivotMotor; not implemented yet
+
+  // private CANSparkMax pivotMotor; not implemented yet
 
   /** Creates a new Shooter. */
   public Shooter() {
-    
 
-    pivotMotor = new WarriorSparkMax(Constants.ShooterConstants.pivotCANSparkID, MotorType.kBrushless, false, IdleMode.kCoast, 50);
-    //pivotMotor.restoreFactoryDefaults();
+    pivotMotor =
+        new WarriorSparkMax(
+            Constants.ShooterConstants.pivotCANSparkID,
+            MotorType.kBrushless,
+            false,
+            IdleMode.kCoast,
+            50);
+    // pivotMotor.restoreFactoryDefaults();
 
     Timer.delay(0.2);
 
-    //pivotMotor.setSmartCurrentLimit(50);
-        
+    // pivotMotor.setSmartCurrentLimit(50);
+
     pivotMotor.setIdleMode(IdleMode.kBrake);
 
-
     Timer.delay(0.2);
-    
 
     shooterEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterEncoderID);
-    //shooterEncoder.setPositionOffset(Constants.ShooterConstants.shooterEncoderOffset);
+    // shooterEncoder.setPositionOffset(Constants.ShooterConstants.shooterEncoderOffset);
 
-    // controller = new ProfiledPIDController(0.61, 0, 0, new Constraints(Units.degreesToRadians(180.0), Units.degreesToRadians(360.0)));
+    // controller = new ProfiledPIDController(0.61, 0, 0, new
+    // Constraints(Units.degreesToRadians(180.0), Units.degreesToRadians(360.0)));
 
     // controller.setTolerance(Units.degreesToRadians(2.0));
     // controller.enableContinuousInput(-Math.PI, Math.PI);
     // feedforward = new ArmFeedforward(0.09, 0.86, 1.95);
 
-
   }
 
-  public SparkMax getShooterMotor(){
+  public SparkMax getShooterMotor() {
     return pivotMotor;
   }
-  
 
-  public void setPivotSpeed(double speed){
+  public void setPivotSpeed(double speed) {
     pivotMotor.set(speed);
   }
 
-  
   // public void zeroEncoder(){
   //   shooterEncoder.reset();
   // }
 
-  public double getPivotMotorVoltage(){
+  public double getPivotMotorVoltage() {
     return pivotMotor.getBusVoltage();
   }
 
-  public void setPivotVoltage(double voltage){
+  public void setPivotVoltage(double voltage) {
     pivotMotor.setVoltage(voltage);
   }
 
@@ -105,7 +100,7 @@ public class Shooter extends SubsystemBase {
   // public boolean atGoal(){
   //   return controller.atGoal();
   // }
- 
+
   // public double getWrappedAngle(){
   //   return MathUtil.angleModulus(getAngle());
   // }
@@ -114,14 +109,15 @@ public class Shooter extends SubsystemBase {
   //   controller.reset(getWrappedAngle(), pivotMotor.getEncoder().getVelocity());
   // }
 
-  public void stop(){
+  public void stop() {
     pivotMotor.setVoltage(0.0);
   }
 
-  public DutyCycleEncoder getShooterEncoder(){
+  public DutyCycleEncoder getShooterEncoder() {
     return shooterEncoder;
   }
-  public double getAbsoluteDistance(){
+
+  public double getAbsoluteDistance() {
     return Math.abs(shooterEncoder.get());
   }
 
